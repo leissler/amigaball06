@@ -29,6 +29,7 @@ class PlayField {
       ball.update();
     }
     checkBallBallCollisions();
+    checkBallPlayfieldCollisions();
   }
 
   private void checkBallBallCollisions() {
@@ -47,7 +48,8 @@ class PlayField {
   private void checkBallPlayfieldCollisions(){
     int n = balls.size();
     for (int i=0; i<n; i++) {
-      
+      AmigaBall b = balls.get(i);
+      b.collidesLeftWith(
     }
   }
   

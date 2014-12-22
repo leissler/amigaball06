@@ -122,60 +122,6 @@ class AmigaBall {
     // Replace the collision velocity components with the new ones
     this.setVelocity(PVector.add(this.getVelocity(),PVector.mult(collision,(acf-aci))));
     b.setVelocity(PVector.add(b.getVelocity(),PVector.mult(collision,(bcf-bci))));
-
-
-    /*
-    PVector velocity = getVelocity();
-    PVector ballVelocity = b.getVelocity();
-    PVector position = getPosition();
-    PVector ballposition = b.getPosition();
-    PVector delta = PVector.sub(position, ballposition);
-    float d = delta.mag();
-    PVector mtd = PVector.mult(delta, ((r1 + r2)-d)/d);
-    float im1 = 1.0 / 1.0; 
-    float im2 = 1.0 / 1.0;
-    this.setPosition(PVector.add(position, PVector.mult(mtd, im1 / (im1 + im2))));
-    b.setPosition(PVector.sub(ballposition, PVector.mult(mtd, im2 / (im1 + im2))));
-    PVector v = (PVector.sub(velocity, ballVelocity));
-    float vn = v.dot(mtd.normalize(null));
-    if (vn > 0.0f) return;
-    float i = (-(1.0f + restitution) * vn) / (im1 + im2);
-    PVector impulse = PVector.mult(mtd.normalize(null), i);
-    this.setVelocity(PVector.add(velocity, PVector.mult(impulse, im1)));
-    b.setVelocity(PVector.add(ballVelocity, PVector.mult(impulse, im2)));
-*/    
-/*
-    // get the mtd
-    Vector2d delta = (position.subtract(ball.position));
-    float d = delta.getLength();
-    // minimum translation distance to push balls apart after intersecting
-    Vector2d mtd = delta.multiply(((getRadius() + ball.getRadius())-d)/d); 
-
-
-    // resolve intersection --
-    // inverse mass quantities
-    float im1 = 1 / getMass(); 
-    float im2 = 1 / ball.getMass();
-
-    // push-pull them apart based off their mass
-    position = position.add(mtd.multiply(im1 / (im1 + im2)));
-    ball.position = ball.position.subtract(mtd.multiply(im2 / (im1 + im2)));
-
-    // impact speed
-    Vector2d v = (this.velocity.subtract(ball.velocity));
-    float vn = v.dot(mtd.normalize());
-
-    // sphere intersecting but moving away from each other already
-    if (vn > 0.0f) return;
-
-    // collision impulse
-    float i = (-(1.0f + Constants.restitution) * vn) / (im1 + im2);
-    Vector2d impulse = mtd.multiply(i);
-
-    // change in momentum
-    this.velocity = this.velocity.add(impulse.multiply(im1));
-    ball.velocity = ball.velocity.subtract(impulse.multiply(im2));
-*/
   }
 
 
