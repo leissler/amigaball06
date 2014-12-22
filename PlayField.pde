@@ -39,7 +39,7 @@ class PlayField {
         AmigaBall b1 = balls.get(i);
         AmigaBall b2 = balls.get(j);
         if (b1.collidesWith(b2)) {
-          b1.resolveCollision(b2);
+          b1.resolveBallCollision(b2);
         }
       }
     }
@@ -49,7 +49,9 @@ class PlayField {
     int n = balls.size();
     for (int i=0; i<n; i++) {
       AmigaBall b = balls.get(i);
-      b.collidesLeftWith(
+      if(b.collidesWith(this)){
+        b.resolvePlayfieldCollision(this);
+      }
     }
   }
   

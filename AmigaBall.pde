@@ -62,7 +62,6 @@ class AmigaBall {
 
   public void update() {
     updatePosition();
-    bounceBall();
   }
 
   public float getX(){return x;}
@@ -94,7 +93,16 @@ class AmigaBall {
     return false;
   }
   
-  public void resolveCollision(AmigaBall b){
+  
+  public int collidesWith(PlayField pf) {
+
+  }
+  
+  private void resolvePlayfieldCollision(int collisionMask) {
+
+  }
+  
+  public void resolveBallCollision(AmigaBall b){
     float x1 = this.x;
     float y1 = this.y;
     float x2 = b.getX();
@@ -106,7 +114,7 @@ class AmigaBall {
     float restitution = 1.0f;
   
     // Get the components of the velocity vectors which are parallel to the collision.
-    // The perpendicular component remains the same for both fish
+    // The perpendicular component remains the same for both
     PVector collision = PVector.sub(getPosition(), b.getPosition());
     float distance = collision.mag();
     
@@ -136,39 +144,7 @@ class AmigaBall {
   }
 
 
-  private int state;
 
-  
-  private void bounceBall() {
-    print(state+",");
-    switch(state){
-    case 0:
-      if (x < radius ) {
-        xSpeed = -xSpeed;
-        state = 1;
-      }
-      else if (x > winSize-radius) {
-        xSpeed = -xSpeed;
-        state = 1;
-      }    
-      
-      if (y > winSize - radius) {
-        //println("Bounce Y");
-        ySpeed = - ySpeed;
-        state = 1;
-      } else {
-        ySpeed += yAcceleration;
-      }
-      break;
-    case 1:
-      if (x >= radius && x <= winSize-radius && y <= winSize - radius) {
-        //println("Bounce Back y="+y);
-        state = 0;
-      }
-      ySpeed += yAcceleration;
-      break;
-    }
-  }
 
   private void drawAmigaBall(float xpos, float ypos, float radius, int facets, color c1, color c2, float yrot, float zrot) {
     if (yrot > 2*PI) {
