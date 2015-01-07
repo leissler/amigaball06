@@ -4,6 +4,8 @@ class PlayField {
   // 0 = Game Running
   // 1 = Game Over
   int gameState; 
+  int lives = 3;
+  PImage livesImg;
   
   // Grid variables
   private float padding;
@@ -44,11 +46,13 @@ class PlayField {
     spacePressed = false;
     
     gameState = 0; // Running
+    lives = 3;
+    livesImg = loadImage("rocket.png");
     
   }
 
   public float getHeight(){return this.height;}
-  public float getWidth(){return this.height;}
+  public float getWidth(){return this.width;}
 
   public void update() {
     switch(gameState){
@@ -140,7 +144,7 @@ class PlayField {
       case 0: // Running
         background(189, 189, 189);
         drawGrid();
-    
+        drawLives();
         for (GameObject ball : balls) {
           ball.display();
         }
@@ -156,8 +160,16 @@ class PlayField {
         textSize(50);
         text("(Press SPACE)", this.width/2, this.height/2+70);
       break;
+    } 
+  }
+  
+  public void drawLives(){
+    noStroke();
+    fill(100, 130, 180, 255);
+    rect(20,30, 3*75, 80);
+    for(int i=0; i<lives; i++){
+      image(livesImg, 60 + i*70, 70, 60, 60);
     }
-    
   }
 
   public void addBall() {
