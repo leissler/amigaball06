@@ -23,8 +23,15 @@ class GameObject {
   public PVector getVelocity(){return new PVector(this.xSpeed, this.ySpeed);}
   public void setVelocity(PVector v){this.xSpeed=v.x; this.ySpeed=v.y;}
   
-  public void display(){};
-  public void update(){};
+  public void display(){
+    if(img != null){
+      image(img, x,y, w,h);
+    }
+  };
+  public void update(){
+    x+=xSpeed;
+    y+=ySpeed;
+  };
   
   boolean intersectsCircle(float cx, float cy, float r) {
     float circleDistanceX = abs(cx - x);

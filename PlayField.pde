@@ -43,7 +43,7 @@ class PlayField {
     rightPressed = false;
     spacePressed = false;
     
-    gameState = 0;
+    gameState = 0; // Running
     
   }
 

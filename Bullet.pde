@@ -7,18 +7,9 @@ class Bullet extends GameObject {
     this.h = img.height;
     this.x = p.getX(); 
     this.y = p.getY() - p.getHeight()/2 - h/2;
-    this.ySpeed = 20;
+    this.ySpeed = - 20;
   }  
 
-  void display( ) {
-    fill (255, 255, 255);
-    image(img, x, y);
-  }  
-
-  void update() {
-      y-=ySpeed;
-  }
-  
   boolean collidesWith(AmigaBall b){
     return intersectsCircle(b.getX(), b.getY(), b.getRadius() );
   }

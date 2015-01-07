@@ -21,7 +21,7 @@ class Player extends GameObject {
   }
 
   void display() {
-    image(img, x, y);
+    super.display();
 
     for (GameObject bullet : bulletList) {
       bullet.display();
