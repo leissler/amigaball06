@@ -1,6 +1,5 @@
 
-
-class AmigaBall {
+class AmigaBall extends GameObject {
 
   // Ball parameters
   private int facets; //  = 7;
@@ -11,11 +10,7 @@ class AmigaBall {
   private float radius; // = 100;
 
   // Physics
-  private float x; // = winSize/2;
-  private float y; // = winSize/3;
-  private float ySpeed; // = 0.0;
   private float yAcceleration; // = 0.25;
-  private float xSpeed; // = 1.4;
 
   // Constructor without parameters (random ball)
   AmigaBall() {
@@ -29,8 +24,8 @@ class AmigaBall {
     rotSpeed = radians(random(1, 5));
     radius = random(30, 100);
 
-    x = mouseX;//random(radius, winSize-radius);
-    y = mouseY;//random(winSize/3, 2*winSize/3);
+    x = mouseX;
+    y = mouseY;
     ySpeed = 0.0;
     xSpeed = random(-3, 3);
     yAcceleration = 0.25;
@@ -50,7 +45,7 @@ class AmigaBall {
     this.yAcceleration = acc;
   }
 
-  public void draw() {
+  public void display() {
     // Draw the balls shadow
     noStroke();
     fill(0, 0, 0, 110);
@@ -60,24 +55,22 @@ class AmigaBall {
     drawAmigaBall(x, y, radius, facets, color1, color2, x*rotSpeed*0.1, rotation);
   }
 
-  public void update() {
-    updatePosition();
+  public void update() {  
+    // Update the balls x position
+    x += xSpeed;
+
+    // Update y position
+    y += ySpeed;
+    
+    // Gravity
+    ySpeed += yAcceleration;
+
   }
 
-  public float getX(){return x;}
-  public float getY(){return y;}
   public float getRadius(){return radius;}
-  public float getXSpeed(){return xSpeed;}
-  public void setXSpeed(float xs){xSpeed =xs;}
-  public float getYSpeed(){return ySpeed;}
-  public void setYSpeed(float ys){ySpeed =ys;}
-  public PVector getPosition(){return new PVector(this.x,this.y);}
-  public void setPosition(PVector v){this.x=v.x; this.y=v.y;}
-  public void setPosition(float x, float y) {this.x=x;this.y=y;}
-  public PVector getVelocity(){return new PVector(this.xSpeed, this.ySpeed);}
-  public void setVelocity(PVector v){this.xSpeed=v.x; this.ySpeed=v.y;}
 
-  public boolean collidesWith(AmigaBall b) {
+
+  public boolean collidesWithBall(AmigaBall b) {
     float x1 = this.x;
     float y1 = this.y;
     float x2 = b.getX();
@@ -94,15 +87,33 @@ class AmigaBall {
   }
   
   
-  public int collidesWith(PlayField pf) {
+  public int collidesWithPlayfield(PlayField pf) {
+    int ret = 0; // default = no collision
+    
+    if(x < radius){ret |= 8;} // Check left
+    if(x > pf.getWidth()-radius){ret |= 2;} // Check right
+    if(y > pf.getHeight()-radius){ret |= 4;} // Check bottom
+
+    return ret;
+  }
+  
+  private void resolvePlayfieldCollision(int collisionValue) {
+    //println(collisionValue);
+    if((collisionValue & 2) != 0){ // collides right
+      xSpeed = -abs(xSpeed);
+    }
+    if((collisionValue & 8) != 0){ // collides left
+      xSpeed = abs(xSpeed);
+    }
+
+    if((collisionValue & 4) != 0){ // collides bottom
+      ySpeed -= yAcceleration; // correction of wrongly accelerated object
+      ySpeed = -abs(ySpeed);
+    }
 
   }
   
-  private void resolvePlayfieldCollision(int collisionMask) {
-
-  }
-  
-  public void resolveBallCollision(AmigaBall b){
+  public void resolveBallBallCollision(AmigaBall b){
     float x1 = this.x;
     float y1 = this.y;
     float x2 = b.getX();
@@ -133,19 +144,8 @@ class AmigaBall {
   }
 
 
-  // Private functions for drawing and behavior
-
-  private void updatePosition() {
-    // Update the balls x position
-    x += xSpeed;
-
-    // Update y position by using acceleration (physics)
-    y += ySpeed;
-  }
-
-
-
-
+  // Private methods for low level amiga ball drawing
+  // -------------------------------------------------------------------------------
   private void drawAmigaBall(float xpos, float ypos, float radius, int facets, color c1, color c2, float yrot, float zrot) {
     if (yrot > 2*PI) {
       yrot -= int((yrot/(2*PI)))*2*PI;
@@ -189,6 +189,6 @@ class AmigaBall {
       cf = !cf;
       quad(tx1, ty, tx2, ty, bx2, by, bx1, by);
     }
-  };
+  }
 }
 

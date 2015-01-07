@@ -10,8 +10,15 @@ class PlayField {
 
   // The list of balls
   private ArrayList<AmigaBall> balls;
+  
+  // The Player
+  Player player;
 
-  private boolean checkBallCollisions;
+  boolean upPressed;
+  boolean downPressed;
+  boolean leftPressed;
+  boolean rightPressed;
+  boolean spacePressed;
 
   public PlayField(int w, int h) {
     this.width = w;
@@ -20,16 +27,30 @@ class PlayField {
     numVLines = 16;
     numHLines = 13;
     gridSize = winSize-2*padding;
-    balls = new ArrayList<AmigaBall>();
-    checkBallCollisions = true;
+    balls = new ArrayList<AmigaBall>(); 
+    player = new Player(this);
+    
+    upPressed = false;
+    downPressed = false;
+    leftPressed = false;
+    rightPressed = false;
+    spacePressed = false;
+    
   }
 
+  public float getHeight(){return this.height;}
+  public float getWidth(){return this.height;}
+
   public void update() {
+    checkBallBallCollisions();
+    checkBallPlayfieldCollisions();
+    
     for (AmigaBall ball : balls) {
       ball.update();
     }
-    checkBallBallCollisions();
-    checkBallPlayfieldCollisions();
+    
+    player.update();
+
   }
 
   private void checkBallBallCollisions() {
@@ -38,23 +59,24 @@ class PlayField {
       for (int j=i+1; j<n; j++) {
         AmigaBall b1 = balls.get(i);
         AmigaBall b2 = balls.get(j);
-        if (b1.collidesWith(b2)) {
-          b1.resolveBallCollision(b2);
+        if (b1.collidesWithBall(b2)) {
+          b1.resolveBallBallCollision(b2);
         }
       }
     }
   }
   
+  
   private void checkBallPlayfieldCollisions(){
     int n = balls.size();
     for (int i=0; i<n; i++) {
       AmigaBall b = balls.get(i);
-      if(b.collidesWith(this)){
-        b.resolvePlayfieldCollision(this);
+      int pfc = b.collidesWithPlayfield(this);
+      if(pfc != 0){
+        b.resolvePlayfieldCollision(pfc);
       }
     }
   }
-  
 
 
   public void display() {
@@ -62,21 +84,66 @@ class PlayField {
     drawGrid();
 
     for (AmigaBall ball : balls) {
-      ball.draw();
+      ball.display();
     }
+    
+    player.display();
   }
 
   public void addBall() {
     balls.add(new AmigaBall());
   }
 
-  public void mousePressed() {
-    if (mouseButton == LEFT) {
+  public void mousePressed(int button) {
+    if (button == LEFT) {
       balls.add(new AmigaBall());
-    } else if (mouseButton == RIGHT && balls.size()>1 ) {
+    } else if (button == RIGHT && balls.size()>1 ) {
       balls.remove(0);
     }
   }
+
+  void keyPressed(int k, int c) {
+    if (k == CODED) {
+      if (c == UP) {
+        upPressed = true;
+      }
+      else if (c == DOWN) {
+        downPressed = true;
+      }
+      else if (c == LEFT) {
+        leftPressed = true;
+      }
+      else if (c == RIGHT) {
+        rightPressed = true;
+      }
+    }else{
+      if(k == ' '){
+        spacePressed = true;
+      }
+    }
+  }
+  
+  void keyReleased(int k, int c) {
+    if (k == CODED) {
+      if (c == UP) {
+        upPressed = false;
+      }
+      else if (c == DOWN) {
+        downPressed = false;
+      }
+      else if (c == LEFT) {
+        leftPressed = false;
+      }
+      else if (c == RIGHT) {
+        rightPressed = false;
+      }
+    }else{
+      if(k == ' '){
+        spacePressed = false;
+      }
+    }
+  }
+
 
   private void drawGrid() {
     stroke(155, 29, 227);

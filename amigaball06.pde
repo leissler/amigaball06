@@ -14,6 +14,13 @@ void draw() {
 };
 
 void mousePressed(){
-  pf.mousePressed();
+  pf.mousePressed(mouseButton);
 }
 
+void keyPressed(){
+  pf.keyPressed(key,keyCode);
+}
+
+void keyReleased(){
+  pf.keyReleased(key,keyCode);
+}
