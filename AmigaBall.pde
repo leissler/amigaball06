@@ -114,15 +114,6 @@ class AmigaBall extends GameObject {
   }
   
   public void resolveBallBallCollision(AmigaBall b){
-    float x1 = this.x;
-    float y1 = this.y;
-    float x2 = b.getX();
-    float y2 = b.getY();
-    float dx = (x2-x1);
-    float dy = (y2-y1);
-    float r1 = radius;
-    float r2 = b.getRadius();
-    float restitution = 1.0f;
   
     // Get the components of the velocity vectors which are parallel to the collision.
     // The perpendicular component remains the same for both

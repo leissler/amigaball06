@@ -16,9 +16,11 @@ class Bullet extends GameObject {
   }  
 
   void update() {
-    if (y > (-95)) {
       y-=ySpeed;
-    }
   }
-
+  
+  boolean collidesWith(AmigaBall b){
+    return intersectsCircle(b.getX(), b.getY(), b.getRadius() );
+  }
+  
 }

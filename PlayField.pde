@@ -1,5 +1,10 @@
 class PlayField {
 
+  // Games current state
+  // 0 = Game Running
+  // 1 = Game Over
+  int gameState; 
+  
   // Grid variables
   private float padding;
   private int numVLines;
@@ -9,9 +14,9 @@ class PlayField {
   private int width;
 
   // The list of balls
-  private ArrayList<AmigaBall> balls;
+  private ArrayList<GameObject> balls;
   
-  int[][] collisionMatrix = new int[20][20];
+  int[][] ballCollisionMatrix = new int[20][20];
   
   // The Player
   Player player;
@@ -29,7 +34,7 @@ class PlayField {
     numVLines = 16;
     numHLines = 13;
     gridSize = winSize-2*padding;
-    balls = new ArrayList<AmigaBall>(); 
+    balls = new ArrayList<GameObject>(); 
     player = new Player(this);
     
     upPressed = false;
@@ -38,37 +43,80 @@ class PlayField {
     rightPressed = false;
     spacePressed = false;
     
+    gameState = 0;
+    
   }
 
   public float getHeight(){return this.height;}
   public float getWidth(){return this.height;}
 
   public void update() {
-
-
-    
-    for (AmigaBall ball : balls) {
-      ball.update();
+    switch(gameState){
+      case 0: // Running
+        for (GameObject ball : balls) {
+          ball.update();
+        }
+        checkBallBallCollisions();
+        checkBallPlayfieldCollisions();
+        checkBallBulletCollisions();
+        checkBallPlayerCollisions();
+        player.update();     
+      break;
+      
+      case 1: // Over
+        if(spacePressed){
+          gameState = 0;
+          balls.clear();
+          player = new Player(this);
+        }
+      break;
     }
-    checkBallBallCollisions();
-    checkBallPlayfieldCollisions();
-    player.update();
+  }
 
+  private void checkBallBulletCollisions() {
+    ArrayList<GameObject> bullets = player.getBulletList();
+    int n = bullets.size();
+    int m = balls.size();
+    Bullet bullet;
+    AmigaBall ball;
+    for (int i=0; i<n; i++) { // Each bullet
+      for (int j=0; j<m; j++) { // Each ball
+        bullet = (Bullet)bullets.get(i);
+        ball = (AmigaBall)balls.get(j);
+        if(bullet.collidesWith(ball)){
+          balls.remove(j);
+          bullets.remove(i);
+          return;
+        }
+      }
+    }
+  }
+
+  private void checkBallPlayerCollisions() {
+    int n = balls.size();
+    AmigaBall ball;
+    for (int i=0; i<n; i++) { // Each ball
+      ball = (AmigaBall)balls.get(i);
+      if(player.collidesWith(ball)){
+        gameState = 1; // Over
+      }
+    }
   }
 
   private void checkBallBallCollisions() {
     int n = balls.size();
+    AmigaBall b1,b2;
     for (int i=0; i<n; i++) {
       for (int j=i+1; j<n; j++) {
-        if(collisionMatrix[i][j] == 0){
-          AmigaBall b1 = balls.get(i);
-          AmigaBall b2 = balls.get(j);
+        if(ballCollisionMatrix[i][j] == 0){
+          b1 = (AmigaBall)balls.get(i);
+          b2 = (AmigaBall)balls.get(j);
           if (b1.collidesWithBall(b2)) {
             b1.resolveBallBallCollision(b2);
-            collisionMatrix[i][j] = 7;
+            ballCollisionMatrix[i][j] = 5;
           }
-        } else { // collisionMatrix[i][j] != 0
-          collisionMatrix[i][j]--;
+        } else { // ballCollisionMatrix[i][j] != 0
+          ballCollisionMatrix[i][j]--;
         }
       }
     }
@@ -78,7 +126,7 @@ class PlayField {
   private void checkBallPlayfieldCollisions(){
     int n = balls.size();
     for (int i=0; i<n; i++) {
-      AmigaBall b = balls.get(i);
+      AmigaBall b = (AmigaBall)balls.get(i);
       int pfc = b.collidesWithPlayfield(this);
       if(pfc != 0){
         b.resolvePlayfieldCollision(pfc);
@@ -88,14 +136,28 @@ class PlayField {
 
 
   public void display() {
-    background(189, 189, 189);
-    drawGrid();
+    switch(gameState){
+      case 0: // Running
+        background(189, 189, 189);
+        drawGrid();
+    
+        for (GameObject ball : balls) {
+          ball.display();
+        }
+        
+        player.display();
+      break;
 
-    for (AmigaBall ball : balls) {
-      ball.display();
+      case 1: // Over
+        fill(255,0,0);
+        textAlign(CENTER);
+        textSize(100);
+        text("GAME OVER", this.width/2, this.height/2);
+        textSize(50);
+        text("(Press SPACE)", this.width/2, this.height/2+70);
+      break;
     }
     
-    player.display();
   }
 
   public void addBall() {

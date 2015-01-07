@@ -3,7 +3,7 @@ class Player extends GameObject {
   int coolDownTime;
   private int fireCooldown;
 
-  ArrayList<Bullet> bulletList;
+  ArrayList<GameObject> bulletList;
 
   Player(PlayField p) {
     this.pf = p;
@@ -15,15 +15,15 @@ class Player extends GameObject {
     this.y = pf.getHeight() - h/2;
     this.xSpeed = 5;
 
-    bulletList = new ArrayList<Bullet>();
+    bulletList = new ArrayList<GameObject>();
     fireCooldown = 0;
-    coolDownTime = 10;
+    coolDownTime = 20;
   }
 
   void display() {
     image(img, x, y);
 
-    for (Bullet bullet : bulletList) {
+    for (GameObject bullet : bulletList) {
       bullet.display();
     }
   }
@@ -43,8 +43,11 @@ class Player extends GameObject {
       fireCooldown--;
     } 
 
-    for (Bullet bullet : bulletList) {
-      bullet.update();
+    for (int i=0; i<bulletList.size(); i++) {
+      bulletList.get(i).update();
+      if(bulletList.get(i).getY() < 0){
+        bulletList.remove(i);
+      }
     }
   }
 
@@ -53,6 +56,14 @@ class Player extends GameObject {
       bulletList.add(new Bullet(this));
       fireCooldown = coolDownTime;
     }
+  }
+  
+  boolean collidesWith(AmigaBall b){
+    return intersectsCircle(b.getX(), b.getY(), b.getRadius() );
+  }
+  
+  ArrayList<GameObject> getBulletList(){
+    return bulletList;
   }
 
 }
