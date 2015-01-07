@@ -11,6 +11,8 @@ class PlayField {
   // The list of balls
   private ArrayList<AmigaBall> balls;
   
+  int[][] collisionMatrix = new int[20][20];
+  
   // The Player
   Player player;
 
@@ -42,13 +44,14 @@ class PlayField {
   public float getWidth(){return this.height;}
 
   public void update() {
-    checkBallBallCollisions();
-    checkBallPlayfieldCollisions();
+
+
     
     for (AmigaBall ball : balls) {
       ball.update();
     }
-    
+    checkBallBallCollisions();
+    checkBallPlayfieldCollisions();
     player.update();
 
   }
@@ -57,10 +60,15 @@ class PlayField {
     int n = balls.size();
     for (int i=0; i<n; i++) {
       for (int j=i+1; j<n; j++) {
-        AmigaBall b1 = balls.get(i);
-        AmigaBall b2 = balls.get(j);
-        if (b1.collidesWithBall(b2)) {
-          b1.resolveBallBallCollision(b2);
+        if(collisionMatrix[i][j] == 0){
+          AmigaBall b1 = balls.get(i);
+          AmigaBall b2 = balls.get(j);
+          if (b1.collidesWithBall(b2)) {
+            b1.resolveBallBallCollision(b2);
+            collisionMatrix[i][j] = 7;
+          }
+        } else { // collisionMatrix[i][j] != 0
+          collisionMatrix[i][j]--;
         }
       }
     }
