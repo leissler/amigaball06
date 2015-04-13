@@ -1,5 +1,5 @@
 // Window variables
-int winSize = 1050;
+int winSize = 1100;
 
 PlayField pf;
 
