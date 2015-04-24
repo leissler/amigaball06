@@ -5,6 +5,7 @@ PlayField pf;
 
 void setup() {
   size(winSize, winSize);
+  int i= height;
   pf = new PlayField(width, height);
 };
 
